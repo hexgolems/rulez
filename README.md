@@ -1,2 +1,2 @@
 # rulez
-another rusty game
+![rulez](https://github.com/hexgolems/rulez/blob/master/rulez.png)
