@@ -63,6 +63,7 @@ impl Rule {
         return 0x40 < p && p <= 0x5a;
     }
     fn matches(p: u8, n: u8, repl: &mut HashMap<u8,u8>) ->  bool {
+        if p == 0x5f {return true;}// _ matches everything
         if Self::is_var(p) {
             if let Some(v) = repl.get(&p){
                 return *v == n;
