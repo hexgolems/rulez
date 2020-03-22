@@ -11,9 +11,10 @@ pub struct Field {
 
 impl Field {
     pub fn new(w: usize, h: usize) -> Self {
+        assert!{ h > 4 && w > 4 };
         let mut data = vec![];
-        for _x in 0..w {
-            data.push((0..h).map(|_| 0x20u8).collect::<Vec<u8>>());
+        for _y in 0..h {
+            data.push((0..w).map(|_| 0x20u8).collect::<Vec<u8>>());
         }
         Self { data, w, h }
     }
@@ -21,10 +22,11 @@ impl Field {
     pub fn coords(&self) -> itertools::Product<std::ops::Range<usize>, std::ops::Range<usize>> {
         return (0..self.w).cartesian_product(0..self.h);
     }
+
     pub fn set(&mut self, x: usize, y: usize, val: u8) {
         assert!(x < self.w);
         assert!(y < self.h);
-        self.data[x][y] = val;
+        self.data[y][x] = val;
     }
 
     pub fn get(&self, x: isize, y: isize) -> u8 {
@@ -33,8 +35,8 @@ impl Field {
         }
         *self
             .data
-            .get(x as usize)
-            .and_then(|w| w.get(y as usize))
+            .get(y as usize)
+            .and_then(|w| w.get(x as usize))
             .unwrap_or(&0x20)
     }
 
@@ -47,52 +49,7 @@ impl Field {
         }
         return res;
     }
-
-    pub fn to_string(&self) -> String {
-        let mut res = "/".to_string();
-        res += &(0..self.w).map(|_| "-").collect::<String>();
-        res += "\\\n";
-        for y in 0..self.h {
-            res += "|";
-            for x in 0..self.w {
-                res += std::str::from_utf8(&[self.get(x as isize, y as isize)]).unwrap();
-            }
-            res += "|\n"
-        }
-        res += "\\";
-        res += &(0..self.w).map(|_| "-").collect::<String>();
-        res += "/";
-        return res;
-    }
 }
-
-//"x."
-// A not in [ ]
-// B in [   ]
-
-// """"""""""""""""
-// |              |
-// |              |
-// |  x           |
-// |              |
-// |              |
-// |              |
-// """"""""""""""""
-
-// """"""""""""""""
-// |              |
-// |              |
-// |  ..........x |
-// |              |
-// |              |
-// |              |
-// """"""""""""""""
-
-// """""    """""   //// """""  """""
-// |A A|    |   |   //// |   |  |ABC|
-// |   |=x  |   |=  //// |   |  |DEF|=E
-// |   |    |   |   //// |   |  |GHI|
-// """""    """""   //// """""  """""
 
 pub struct Rule {
     pub pattern: Vec<u8>,
@@ -139,7 +96,7 @@ impl Automaton {
         Self { rules }
     }
 
-    pub fn step(&self, field: Field) -> Field {
+    pub fn step(&self, field: &Field) -> Field {
         let mut next_field = field.clone();
         for (x, y) in field.coords() {
             for r in self.rules.iter() {
