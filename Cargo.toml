@@ -1,7 +1,7 @@
 [package]
 name = "automaton"
 version = "0.1.0"
-authors = ["coco <cornelius@hexgolems.com>"]
+authors = ["coco <cornelius@hexgolems.com>", "leex <leex@klautcomputing.de>"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -9,3 +9,7 @@ edition = "2018"
 [dependencies]
 termion = "*"
 itertools = "0.9.0"
+serde="*"
+ron="*"
+glob="*"
+serde_derive="*"
