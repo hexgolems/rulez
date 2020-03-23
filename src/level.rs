@@ -1,11 +1,12 @@
-use crate::field::{Field};
-use crate::automaton::{Automaton};
+use crate::automaton::Automaton;
+use crate::field::Field;
 
-#[derive(Clone,Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct Level {
     pub start: Field,
     pub goal: Field,
-    pub auto: Automaton
+    pub auto: Automaton,
+    pub id: usize,
 }
 
 impl Level {

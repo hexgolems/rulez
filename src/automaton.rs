@@ -1,7 +1,7 @@
-use crate::rule::{Rule};
-use crate::field::{Field};
+use crate::field::Field;
+use crate::rule::Rule;
 
-#[derive(Clone,Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct Automaton {
     pub rules: Vec<Rule>,
 }

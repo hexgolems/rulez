@@ -11,13 +11,14 @@ mod field;
 mod game;
 mod game_state;
 mod level;
-mod rule;
 mod playing_ui;
+mod rule;
 
-use game::{Game};
-use game_state::{GameState};
+use game::Game;
+use game_state::GameState;
 use glob::glob;
 use level::Level;
+use playing_ui::PlayingUI;
 use std::fs::File;
 use std::io::prelude::*;
 use std::io::{stdin, stdout};
@@ -27,7 +28,6 @@ use std::time;
 use termion::input::{MouseTerminal, TermRead};
 use termion::raw::IntoRawMode;
 use termion::screen::AlternateScreen;
-use playing_ui::{PlayingUI};
 
 fn animation(game: Arc<RwLock<Game>>) {
     loop {
@@ -52,14 +52,13 @@ fn main() {
         .unwrap()
         .map(|entry| load_level(&entry.unwrap().into_os_string().into_string().unwrap()))
         .collect::<Vec<_>>();
-    let lvl = levels[0].clone();
-    let ui = PlayingUI::new(lvl);
     let screen = AlternateScreen::from(stdout().into_raw_mode().unwrap());
     let out = MouseTerminal::from(screen);
     let game = Game {
         levels,
         out,
-        state: GameState::Play(ui),
+        state: GameState::Success,
+        level: 0,
     };
 
     let game = Arc::new(RwLock::new(game));

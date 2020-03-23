@@ -1,14 +1,14 @@
-use crate::level::Level;
-use crate::field::Field;
-use crate::rule::Rule;
-use crate::game_state::GameState;
 use crate::cursor_pos::CursorPos;
+use crate::field::Field;
+use crate::game_state::GameState;
+use crate::level::Level;
+use crate::rule::Rule;
 use std::io::Stdout;
-use termion::raw::RawTerminal;
-use termion::screen::AlternateScreen;
-use termion::input::MouseTerminal;
 use std::io::Write;
 use termion::event::{Event, Key};
+use termion::input::MouseTerminal;
+use termion::raw::RawTerminal;
+use termion::screen::AlternateScreen;
 
 const DOWN_RIGHT: &'static str = "╔";
 const DOWN_LEFT: &'static str = "╗";
@@ -70,7 +70,7 @@ impl PlayingUI {
         self.cur_step = 0;
     }
 
-    pub fn update(&mut self) -> bool{
+    pub fn update(&mut self) -> bool {
         if self.field != self.lvl.goal {
             self.field = self.lvl.auto.step(&self.field);
             self.cur_step += 1;
@@ -78,6 +78,11 @@ impl PlayingUI {
         } else {
             return true;
         }
+    }
+
+    pub fn draw_level_description(out: &mut Out, level: usize) {
+        write!(out, "{}", termion::cursor::Goto(2, 2)).unwrap();
+        write!(out, "Level: {}", level).unwrap();
     }
 
     pub fn draw_rules(out: &mut Out, rules: &[Rule], x: usize, y: usize) {
@@ -252,6 +257,7 @@ impl PlayingUI {
             return Self::draw_terminal_to_small(out);
         }
         let (rule_x, rule_y) = self.rules_start(&self.lvl);
+        Self::draw_level_description(out, self.lvl.id);
         Self::draw_rule_box(out, rule_x, rule_y, rule_boxes);
         Self::draw_state_box(
             out,
@@ -262,7 +268,12 @@ impl PlayingUI {
         );
         Self::draw_rules(out, &self.lvl.auto.rules, rule_x as usize, rule_y as usize);
         Self::draw_replacements(out, &self.lvl.auto.rules, rule_x as usize, rule_y as usize);
-        Self::draw_field(out, &self.lvl.start, ((w - state_len as u16) / 2) as usize, 9);
+        Self::draw_field(
+            out,
+            &self.lvl.start,
+            ((w - state_len as u16) / 2) as usize,
+            9,
+        );
         Self::draw_field(
             out,
             &self.field,
